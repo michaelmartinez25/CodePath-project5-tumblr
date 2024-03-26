@@ -6,20 +6,41 @@
 import UIKit
 import Nuke
 
-class ViewController: UIViewController {
-
+class ViewController: UIViewController, UITableViewDataSource {
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return posts.count
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: "PostCell", for: indexPath) as! PostCell
+        
+        let post = posts[indexPath.row]
+        
+        cell.postSummaryLabel.text = post.summary
+        
+        if let photo = post.photos.first {
+            let url = photo.originalSize.url
+            Nuke.loadImage(with: url, into: cell.postImageView)
+        }
+        
+        return cell
+    }
+    
+    @IBOutlet weak var tableView: UITableView!
+    private var posts: [Post] = []
+    private var postOffset = 0
 
     override func viewDidLoad() {
         super.viewDidLoad()
-
-        
+        tableView.dataSource = self
+        let refreshControl = UIRefreshControl()
+        refreshControl.addTarget(self, action: #selector(refreshData(_:)), for: .valueChanged)
+        tableView.refreshControl = refreshControl
         fetchPosts()
     }
 
-
-
     func fetchPosts() {
-        let url = URL(string: "https://api.tumblr.com/v2/blog/humansofnewyork/posts/photo?api_key=1zT8CiXGXFcQDyMFG7RtcfGLwTdDjFUJnZzKJaWTmgyK4lKGYk")!
+        let url = URL(string: "https://api.tumblr.com/v2/blog/mapsontheweb/posts/photo?api_key=1zT8CiXGXFcQDyMFG7RtcfGLwTdDjFUJnZzKJaWTmgyK4lKGYk&offset=\(postOffset)")!
         let session = URLSession.shared.dataTask(with: url) { data, response, error in
             if let error = error {
                 print("❌ Error: \(error.localizedDescription)")
@@ -42,6 +63,8 @@ class ViewController: UIViewController {
                 DispatchQueue.main.async { [weak self] in
 
                     let posts = blog.response.posts
+                    self?.posts = posts
+                    self?.tableView.reloadData()
 
 
                     print("✅ We got \(posts.count) posts!")
@@ -55,5 +78,11 @@ class ViewController: UIViewController {
             }
         }
         session.resume()
+        postOffset += 10
+    }
+    
+    @objc func refreshData(_ sender: Any) {
+        fetchPosts()
+        tableView.refreshControl?.endRefreshing()
     }
 }
