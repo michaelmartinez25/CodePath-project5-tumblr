@@ -1,3 +1,29 @@
+# Project 6 - *Tumblr*
+
+Submitted by: **Michael Martinez**
+
+**Tumblr One Feed** is an app that shows the latest posts from a single feed: Humans of New York!
+
+Time spent: **1.5** hours spent in total
+
+## Required Features
+
+The following **required** functionality is completed:
+
+- [x] Setup navigation to the Detail Screen
+- [x] Created the Detail View UI
+- [x] Add the ability to pass data to the Detail View Controller
+- [x] Made personal finishing touches to the UI
+
+## Video Walkthrough 
+
+[Video Demo](https://youtu.be/Sx3BtN08C4s)
+
+## Notes
+
+This project was mainly focused on effectively using a navigation controller. Most of the challenges were faced in the lab, so solutions were easy to come by in this project.
+
+
 # Project 5 - *Tumblr*
 
 Submitted by: **Michael Martinez**
